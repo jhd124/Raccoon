@@ -1,0 +1,87 @@
+img, video{
+	max-width: 100%;
+}
+.container{
+	padding-left: 2px;
+	padding-right: 2px;
+}
+/*
+header
+*/
+.logo{
+	padding-top: 1em;
+	width: 4em;
+}
+.title>h1{
+	font-size: 3em;
+}
+
+/*
+video
+*/
+.video{
+	margin-top: 1em;
+	padding-top: 1em;
+	border-top: dotted;
+	border-color: orange;
+}
+.movie{
+	width: 100%;
+}
+
+/*
+infomation
+*/
+.poster{
+	padding-top: 3em;
+}
+.information{
+	padding-left: 5px;
+	padding-right: 5px; 
+}
+#info{
+	margin-top: 3em;
+	padding-right: 0;
+}
+#info>div{
+	padding-right: 1px;
+	padding-left: 1px;
+}
+.actors{
+	padding: 0;
+	margin-top: 0.5em;
+}
+.actors>div{
+	padding-left: 0;
+}
+.actor{
+	padding-top: 1em;
+	padding-left: 0;
+}
+.actor_img{
+	float: left;
+	padding-right: 1em;
+}
+.actor>p{
+	font-size: 0.5em;
+	line-height: 0.9em;
+}
+.charac_img{
+	padding: 15px 0 0 0;
+}
+
+.intro{
+	padding-top: 3em;
+	line-height: 2em;
+}
+/*
+media query
+*/
+@media screen and (max-width: 600px){
+	.logo{
+		width: 3em;
+	}
+	.title>h1{
+		font-size: 2em;
+	}
+}
