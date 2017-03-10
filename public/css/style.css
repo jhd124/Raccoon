@@ -32,15 +32,21 @@ video
 /*
 infomation
 */
+.movie_name{
+	margin-top: 1em;
+	font-size: 2em;
+}
 .poster{
-	padding-top: 3em;
+	width: 100%;
+}
+.basic_info{
+	width: 96%;
+	margin-top: 1em;
 }
 .information{
-	padding-left: 5px;
-	padding-right: 5px; 
+	padding: 1em 5px 0 5px;
 }
 #info{
-	margin-top: 3em;
 	padding-right: 0;
 }
 #info>div{
@@ -62,16 +68,26 @@ infomation
 	float: left;
 	padding-right: 1em;
 }
-.actor>p{
+.actor{
+	list-style: none;
+}
+.actor>li{
+	padding-top: 1em;
+}
+.actor>li>p{
 	font-size: 0.5em;
 	line-height: 0.9em;
 }
 .charac_img{
 	padding: 15px 0 0 0;
-}
 
+}
+.charac_img>img{
+	padding-bottom: 1em;
+	padding-top: 0.8em;
+	display: block;
+}
 .intro{
-	padding-top: 3em;
 	line-height: 2em;
 }
 /*
@@ -83,5 +99,11 @@ media query
 	}
 	.title>h1{
 		font-size: 2em;
+	}
+	.movie_name{
+		font-size: 1.2em;
+	}
+	.information{
+		padding-top: 0;
 	}
 }
