@@ -55,10 +55,9 @@ var getAllMovieInfo = function(callback){
 var getOneMovieInfo = function(filter,callback){
 	MongoClient.connect(url, function(err,db){
 		assert.equal(null, err);
-		console.log("Connected successfully to mongodb server\r\n");
+		// console.log("Connected successfully to mongodb server\r\n");
 
 		findOneDocument(db,filter,function(doc){
-			console.log('Client request \"'+doc.movieName+'\" \r\n');
 			callback(doc);
 			db.close();
 		})
@@ -86,8 +85,7 @@ function addOneMovie(data){
 	var collection = db.collection('movies');
 	collection.insertOne(data,function(err){
 		assert.equal(err,null);
-		console.log("Insert the movie \""+data.movieName+"\" into movies\r\n");
-		console.log('Movie information:\r\n'+data+'\r\n')
+		console.log(new Date().toLocaleString()+"|  Insert the movie \""+data.movieName+"\" \r\n");
 	});
 });
 }
@@ -197,6 +195,7 @@ app.get('/movieName/:movieName',function(req,res){
 			story: doc.story
 		};
 	  //渲染模板
+	  console.log(new Date().toLocaleString()+'| Client '+req.ip+'| request \"'+doc.movieName+'\" \r\n');
 	 res.render('movie',data);
 
 	 res.end();

@@ -92,6 +92,12 @@ infomation
 	line-height: 2em;
 }
 /*
+主页
+*/
+.shelf{
+	padding-top: 5em;
+}
+/*
 media query
 */
 @media screen and (max-width: 600px){
@@ -108,3 +114,4 @@ media query
 		padding-top: 0;
 	}
 }
+
