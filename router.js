@@ -2,31 +2,39 @@ var express= require('express');
 var app=express();
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
+var template = require('art-template');
+var bodyparser = require('body-parser')
 
+//设置bodyparser中间件，用以解析post请求
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({ extended: false }));
+// ----------------引入模板引擎----------------
+template.config('base', '');
+template.config('extname', '.html');
+app.engine('.html', template.__express);
+app.set('view engine', 'html');
+app.set('views', __dirname + '/public');
 // get local IP address
 var os = require('os');
 function getAddress(){
-var interfaces = os.networkInterfaces();
-var addresses = [];
-for (var k in interfaces) {
-    for (var k2 in interfaces[k]) {
-        var address = interfaces[k][k2];
-        if (address.family === 'IPv4' && !address.internal) {
-            addresses.push(address.address);
-        }
-    }
-    return addresses[0];
-}
+	var interfaces = os.networkInterfaces();
+	var addresses = [];
+	for (var k in interfaces) {
+		for (var k2 in interfaces[k]) {
+			var address = interfaces[k][k2];
+			if (address.family === 'IPv4' && !address.internal) {
+				addresses.push(address.address);
+			}
+		}
+		return addresses[0];
+	}
 }
 // start a server
+
 var server=app.listen(3000,function(){
-	var host=server.address().address;
+	var addr = getAddress();
 	var port=server.address().port;
-	console.log("listening at %s,%s",host,port);
-	console.log(getAddress());
-	// getOneMovieInfo({movieName:'yourName'},function(doc){
-	// 	console.log('getarecord'+doc.director);
-	// });
+	console.log("listening at %s:%s\r\n",addr,port);
 });
 
 //app.get()
@@ -34,8 +42,8 @@ var server=app.listen(3000,function(){
 var url = 'mongodb://localhost:27017/raccoon';
 var getAllMovieInfo = function(callback){
 	MongoClient.connect(url, function(err,db){
-	assert.equal(null, err);
-	console.log("Connected successfully to mongodb server");
+		assert.equal(null, err);
+		//console.log("Connected successfully to mongodb server\r\n");
 
 	findDocuments(db,function(doc){//注意！ 回调的绝佳示例，先运行这个“findDocuments” 有了doc 再把doc这个参数放进里面的回调函数
 		callback(doc[0]);
@@ -46,15 +54,15 @@ var getAllMovieInfo = function(callback){
 
 var getOneMovieInfo = function(filter,callback){
 	MongoClient.connect(url, function(err,db){
-	assert.equal(null, err);
-	console.log("Connected successfully to mongodb server");
+		assert.equal(null, err);
+		console.log("Connected successfully to mongodb server\r\n");
 
-	findOneDocument(db,filter,function(doc){
-		console.log("got it "+doc);
-		callback(doc);
-		db.close();
+		findOneDocument(db,filter,function(doc){
+			console.log('Client request \"'+doc.movieName+'\" \r\n');
+			callback(doc);
+			db.close();
+		})
 	})
-})
 }
 
 //insert a document
@@ -66,16 +74,30 @@ var insertDocuments = function(db,callback){
 			assert.equal(err,null);
 			assert.equal(2,result.result.n);
 			assert.equal(2,result.ops.length);
-			console.log("Inserted 2 documents into the collection");
+			console.log("Inserted 2 documents into the collection\r\n");
 			callback(result);
 		});
 }
+
+//add a movie into database
+function addOneMovie(data){
+	MongoClient.connect(url, function(err,db){
+		assert.equal(null, err);
+	var collection = db.collection('movies');
+	collection.insertOne(data,function(err){
+		assert.equal(err,null);
+		console.log("Insert the movie \""+data.movieName+"\" into movies\r\n");
+		console.log('Movie information:\r\n'+data+'\r\n')
+	});
+});
+}
+
 //find all document
 var findDocuments = function(db,callback){
 	var collection = db.collection('movies');
 	collection.find({}).toArray(function(err,docs){
 		assert.equal(err, null);
-		console.log("found the following records");
+		//console.log("found the following records\r\n");
 		console.log(docs);
 		callback(docs);
 	})
@@ -86,13 +108,10 @@ var  findOneDocument = function(db,filter,callback){
 	collection.findOne(filter,function(err,doc){
 		if(err){console.log(err)}
 			else{
-		console.log("Found the record");
-		console.log(filter);
-		// console.log(value);
-		console.log(doc);
+				//console.log("Found the record\r\n");
 		callback(doc);
 	}
-	})
+})
 }
 
 // 删除空格
@@ -104,20 +123,43 @@ function deleteSpace(word){
 
 //compiling our schema into a model
 //var Centences=mongoose.model('Centences',englishSchema); 
-app.get('/sss',function(req,res){
-	console.log('ssssss');
-	res.end('ssssssssssssssssssss');
+//添加数据库条目
+app.post('/addRecords',function(req,res){
+	var data = {
+		movieName: req.body.movieName,
+		movieNameChinese: req.body.movieNameChinese,
+		director: req.body.director,
+		playwritter: req.body.playwritter,
+		country: req.body.country,
+		publisher: req.body.publisher,
+		scoreDouban: req.body.scoreDouban,
+		scoreIMDB: req.body.scoreIMDB,
+		actorChinese: req.body.actorChinese,
+		actorEn: req.body.actorEn,
+		mainMaleRole: req.body.mainMaleRole,
+		actressChinese: req.body.actressChinese,
+		actressEn: req.body.actressEn,
+		mainFemaleRole: req.body.mainFemaleRole,
+		supportingActorChinese: req.body.supportingActorChinese,
+		supportingActorEn: req.body.supportingActorEn,
+		supportingMaleRole: req.body.supportingMaleRole,
+		supportingActressChinese: req.body.supportingActressChinese,
+		supportingActressEn: req.body.supportingActressEn,
+		supportingFemaleRole: req.body.supportingFemaleRole,
+		story: req.body.story
+	}
+	addOneMovie(data);
+	// console.log(res);
+	res.end('your data received');
 })
 
 app.get('/movieName/:movieName',function(req,res){
 	var get_filter = {movieName:req.params.movieName};
 	var a=req.params.movieName;
 	getOneMovieInfo({movieName: a},function(doc){
-		var template = require('art-template');
+		
 		var address=getAddress();
 		var port = server.address().port;
-		console.log('记录内容：'+doc);
-		
 		var data = {
 			CSS1: 'http://'+address+':'+port+'/css/bootstrap.min.css',
 			CSS2: 'http://'+address+':'+port+'/css/style.css',
@@ -154,33 +196,13 @@ app.get('/movieName/:movieName',function(req,res){
 			supportingFemaleRolePath: 'http://'+address+':'+port+'/img/'+doc.movieName+'/roles/'+doc.supportingFemaleRole+'.jpg',
 			story: doc.story
 		};
-		// data={}
-     //数据
-    console.log('---------------------')
-	
-	console.log('---------------------')
-	
-     //渲染模板
+	  //渲染模板
+	 res.render('movie',data);
 
-      var html = template('./public/index', data);
-
-	 res.writeHead(200, {"Content-Type": "text/html"});
-	 res.write(html);
-	res.end();
+	 res.end();
 		//res.end('director:'+doc.director);
 	});
 	
 })
-// app.get('/id/:id',function(req,res){
-// 	Centences.findOne({'id':req.params.id},function(error,centences){
-// 		if(error){
-// 			return res.send(error);
-// 		}
-// 		if(!centences){
-// 			return res.send('not found')
-// 		}
-// 		res.json({centences:centences});
-// 		console.log(centences.chinese);
-// 	})
-// });
+
 app.use(express.static('public'));

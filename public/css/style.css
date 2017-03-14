@@ -75,7 +75,7 @@ infomation
 	padding-top: 1em;
 }
 .actor>li>p{
-	font-size: 0.5em;
+	font-size: 0.8em;
 	line-height: 0.9em;
 }
 .charac_img{
@@ -83,6 +83,7 @@ infomation
 
 }
 .charac_img>img{
+	width: 50px;
 	padding-bottom: 1em;
 	padding-top: 0.8em;
 	display: block;
