@@ -40,12 +40,12 @@ var server=app.listen(3000,function(){
 //app.get()
 // connect to mongodb
 var url = 'mongodb://localhost:27017/raccoon';
-var getAllMovieInfo = function(callback){
+var getAllMovieInfo = function(filter,callback){
 	MongoClient.connect(url, function(err,db){
 		assert.equal(null, err);
 		//console.log("Connected successfully to mongodb server\r\n");
 
-	findDocuments(db,function(doc){//注意！ 回调的绝佳示例，先运行这个“findDocuments” 有了doc 再把doc这个参数放进里面的回调函数
+	findDocuments(db,filter,function(doc){//注意！ 回调的绝佳示例，先运行这个“findDocuments” 有了doc 再把doc这个参数放进里面的回调函数
 		callback(doc[0]);
 		db.close();
 	});
@@ -91,9 +91,9 @@ function addOneMovie(data){
 }
 
 //find all document
-var findDocuments = function(db,callback){
+var findDocuments = function(db,fliter,callback){
 	var collection = db.collection('movies');
-	collection.find({}).toArray(function(err,docs){
+	collection.find(fliter).toArray(function(err,docs){
 		assert.equal(err, null);
 		//console.log("found the following records\r\n");
 		console.log(docs);
