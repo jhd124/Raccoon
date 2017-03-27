@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width initial-scale=1">
+	<title>Movie Data</title>
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
+	<script src="./js/template-native.js"></script>
+	<style type="text/css">
+		tr:hover td{
+			background-color: #dddddd;
+			cursor : pointer;
+		}
+		.dataDetail>div{
+			margin-top: 0.5em;
+		}
+		@media screen and (max-width: 399px){
+			.dataDetail{text-align: center;}
+			
+			.dataDetail span{
+				width: 100%;
+			}
+			.dataDetail input{
+				text-align: center;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<form>
+			<input type="search" name="search">
+		</form>
+		<div class="table-responsive">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>
+							影片名称
+						</th>
+						<th>
+							分类
+						</th>
+						<th>
+							国家/地区
+						</th>
+						<th>
+							导演
+						</th>
+						<th>
+							主演
+						</th>
+					</tr>
+				</thead >
+
+				<tbody id="dataList">
+				</tbody>
+			</table>
+		</div>
+		<nav aria-label="Page navigation">
+			<ul class="pagination">
+				<li>
+					<a href="#" aria-label="Previous">
+						<span aria-hidden="true">&laquo;</span>
+					</a>
+				</li>
+				<li><a href="#">1</a></li>
+				<li><a href="#">2</a></li>
+				<li><a href="#">3</a></li>
+				<li><a href="#">4</a></li>
+				<li><a href="#">5</a></li>
+				<li>
+					<a href="#" aria-label="Next">
+						<span aria-hidden="true">&raquo;</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+
+
+		<button id="createRecord" type="button" class="btn btn-primary btn-lg" >
+		  Launch demo modal
+		</button>
+		<!-- Modal -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="myModalLabel">详细信息</h4>
+					</div>
+					<div class="modal-body">
+						<form>
+							<div class="row dataDetail">
+								<div class="col-xs-12 col-sm-6" style="display: none;">
+									<span class="col-xs-6">_id</span><input id="_id" type="text" class="dataElement" name="_id">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">电影名称(英文):</span><input id="movieName" type="text" class="dataElement" name="movieName">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">电影名称(中文):</span><input id="movieNameChinese" type="text" class="dataElement" name="movieNameChinese">	
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">导演:</span><input type="text" class="dataElement" id="director" name="director">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">编剧:</span><input type="text" class="dataElement" id="playwritter" name="playwritter">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">国家:</span><input type="text" class="dataElement" id="country" name="country">	
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">发行商:</span><input type="text" class="dataElement" id="publisher" name="publisher">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">影片分类::</span><input type="text" class="dataElement" id="catagory" name="catagory">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">上映年份:</span><input type="text" class="dataElement" id="year" name="year">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">豆瓣评分:</span><input type="text" class="dataElement" id="scoreDouban" name="scoreDouban">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">IMDB评分:</span><input type="text" class="dataElement" id="scoreIMDB" name="scoreIMDB">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">男主角(中文名):</span><input type="text" class="dataElement" id="actorChinese" name="actorChinese">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">男主角(英文名):</span><input type="text" class="dataElement" id="actorEn" name="actorEn">
+								</div>
+								<div class="col-xs-12 col-sm-6  ">
+									<span class="col-xs-6">女主角(中文名):</span><input type="text" class="dataElement" id="actressChinese" name="actressChinese">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">女主角(英文名):</span><input type="text" class="dataElement" id="actressEn" name="actressEn">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">男配角(中文名):</span><input type="text" class="dataElement" id="supportingActorChinese" name="supportingActorChinese">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">男配角(英文名):</span><input type="text" class="dataElement" id="supportingActorEn" name="supportingActorEn">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">配角1(中文名):</span><input type="text" class="dataElement" id="supportingActressChinese" name="supportingActressChinese">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+
+									<span class="col-xs-6">配角2(英文名):</span><input type="text" class="dataElement" id="supportingActressEn" name="supportingActressEn">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">主要人物1:</span><input type="text" class="dataElement" id="mainMaleRole" name="mainMaleRole">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">主要人物2:</span><input type="text" class="dataElement" id="mainFemaleRole" name="mainFemaleRole">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">辅助角色1:</span><input type="text" class="dataElement" id="supportingMaleRole" name="supportingMaleRole">
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<span class="col-xs-6">辅助角色2:</span><input type="text" class="dataElement" id="supportingFemaleRole" name="supportingFemaleRole">
+								</div>
+								<div class="col-xs-12">
+									<span class="col-xs-6">剧情简介:</span><textarea id="story" name="story" class="dataElement" rows="10" cols="100" style="width: 90%;"></textarea>
+								</div>
+		<!-- 	<div class="col-xs-4 col-sm-4 col-md-3">
+				<input type="submit" id="submit" value="save" style="width: 100%; height: 50px; ">
+			</div> -->
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	<input id="modify" type="button" class="btn btn-primary" value="修改"></input>
+	<input id="save"   type="button" class="btn btn-primary" value="保存"></input>
+</div>
+
+</div>
+</div>
+</div>
+<!-- 在记录存在时提示是否覆盖原有记录 -->
+<div class="modal fade bs-example-modal-sm" id="alert_override" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content text-center">
+			<h2>已存在同名影片</h2>
+			<p>您可以选择覆盖原有记录，或者返回修改</p>
+			<p>尝试在 “电影名称(英文)" 一栏添加附加信息有助于解决此问题</p>
+			<div class="modal-footer text-center">
+
+				<button type="button" class="btn btn-primary" id="override" style="display: block; width: 100%;">覆盖原有记录</button>
+	
+				<button type="button" class="btn btn-primary" data-dismiss="modal" style="display: block; width: 100%; margin:5px 0 0 0;">返回修改</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 提示确定保存修改？ -->
+<div class="modal fade bs-example-modal-sm" id="alert_modify" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" data-modiorcreate="modi">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content text-center">
+			<h4>您将要修改一条记录，确定要这样做吗？</h4>
+
+			<div class="modal-footer text-center">
+
+				<button type="button" id="sureToModify" class="btn btn-primary" style="display: block; width: 100%;">确定修改</button>
+				
+				<button type="button" class="btn btn-primary" data-dismiss="modal" style="display: block; width: 100%; margin:5px 0 0 0;">取消此操作</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 操作成功 -->
+<div class="modal fade bs-example-modal-sm" id="success" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content text-center">
+			<h4>操作成功</h4>
+
+			<div class="modal-footer text-center">
+
+				<button type="button" id="sureToSuccess" class="btn btn-primary" style="display: block; width: 100%;">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<script type="text/javascript" src="./js/jquery.js"></script>
+<script type="text/javascript" src="./js/manager.js"></script>
+<script type="text/javascript" src="./js/bootstrap.min.js"></script>
+</body>
+</html>
