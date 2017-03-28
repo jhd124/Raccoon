@@ -7,7 +7,7 @@ window.onload=function(){
 			var data = JSON.parse(res);
 			for(var i in data){
 				html += "<tr id="+i+"><td>"+
-				data[i].movieNameChinese+
+				data[i].movieNameChinese+" ("+data[i].movieName+")"+
 				"</td><td>"+
 				data[i].catagory+
 				"</td><td>"+
@@ -20,7 +20,7 @@ window.onload=function(){
 			}
 			$('#dataList')[0].innerHTML = html;
 
-			$('#alert_modify')[0].dataset.modiorcreate='modi';
+			$('#save')[0].dataset.modiorcreate='modi';
 
 			var dataList_row=$('#dataList')[0];
 			$('#dataList').children().click(function(){
@@ -50,10 +50,10 @@ window.onload=function(){
 		}
 	});
 	$('#save').click(function(){
-		if($('#alert_modify')[0].dataset.modiorcreate==='modi'){
+		if($('#save')[0].dataset.modiorcreate==='modi'){
 			$('#alert_modify').modal();
 		}else{
-			var data = collectFormData();
+			var data = collectFormData('create');
 			addRecords(data);
 		}
 	});
@@ -61,7 +61,7 @@ window.onload=function(){
 	$('#myModal').on('hidden.bs.modal', function (e) {
 		$('#save').hide();
 		$('#modify').show();
-		$('#alert_modify')[0].dataset.modiorcreate='modi';
+		$('#save')[0].dataset.modiorcreate='modi';
 	});
 	$('#alert_override').on('hidden.bs.modal',function(e){
 		$('body').attr('class','modal-open');
@@ -71,8 +71,9 @@ window.onload=function(){
 	});
 	//-----------------------------------------------------
 	$('#sureToModify').click(function(){
-		var data = collectFormData();
+		var data = collectFormData('update');
 		updateRecord(data);
+		$('#alert_modify').modal('hide');
 	})
 	$('#sureToSuccess').click(function(){
 		location.reload();
@@ -81,7 +82,7 @@ window.onload=function(){
 		$('#modify').hide();
 		$('#save').show();
 		$('#myModal').modal('show');
-		$('#alert_modify').attr('data-modiorcreate','create');
+		$('#save').attr('data-modiorcreate','create');
 		var dataElement = $(".dataElement");
 		dataElement.removeAttr('value');
 		for(var j = 0; j<dataElement.length; j++){
@@ -89,28 +90,45 @@ window.onload=function(){
 		}
 	});
 	$('#override').click(function(){
-		var data = collectFormData();
+		if($('#save')[0].dataset.modiorcreate==='modi'){
+		var data = collectFormData('update');
 		addOverride(data);
+	}else{
+		var data = collectFormData('create');
+		addOverride(data);
+	}
+	$('#alert_override').modal('hide');
 	});
+	$('#delete').click(function(){
+		$('#alert_delete').modal();
+	});
+	$('#sureToDelete').click(function(){
+		var data ={_id: $('#_id')[0].value};
+		deleteRecord(data);
+		$('#alert_delete').modal('hide');
+	})
 }
-function collectFormData(){
+function collectFormData(operation){
 	var data = {};
 	var dataElement = $(".dataElement");
 	for(var i=0;i<dataElement.length;i++){
 		var data_id = dataElement[i].id;
 		data[data_id]=dataElement[i].value;
 	}
+	data.operation = operation;
 	return data;
 }
 
 function addRecords(data){
 	$.ajax({
 		type: 'POST',
-		url: '/addRecords',
+		url: '/submit',
 		data: data,
 		success: function(res){
 			if(res==='exists'){
 				$('#alert_override').modal()
+			}else if(res==='error'){
+				alert('出问题了')
 			}else{
 				$('#success').modal();
 			}
@@ -121,29 +139,44 @@ function addRecords(data){
 function addOverride(data){
 	$.ajax({
 		type: 'POST',
-		url: '/addOverride',
+		url: '/override',
 		data: data,
-		success: function(){
+		success: function(res){
+			if(res==='error'){alert('出问题了')}
+				else{
 			$('#success').modal();
+		}
 		}
 	})
 }
 
-// function addAnother(data){
-// 	$ajax({
-// 		url: '/addAnother',
-// 		data:
-// 		success: 
-// 	})
-// }
+function deleteRecord(data){
+	$.ajax({
+		url: '/deleteRecord',
+		data: data,
+		success: function(res){
+			if(res==='deleted'){
+				$('#success').modal();
+			}else{
+				alert('出问题了');
+			}
+		}
+	})
+}
 
 function updateRecord(data){
 	$.ajax({
 		type: 'POST',
-		url: '/updateRecord',
+		url: '/submit',
 		data: data,
-		success: function(){
+		success: function(res){
+			if(res==='exists'){
+				$('#alert_override').modal()
+			}else if(res==='error'){
+				alert('出问题了')
+			}else{
 			$('#success').modal();
+		}
 		}
 	})
 }

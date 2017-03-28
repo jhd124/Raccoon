@@ -91,28 +91,29 @@ function packReqData(req,id){
 
 
 //添加数据库条目
-var conflict_id = "";
-app.post('/addRecords',function(req,res){
-	movieData.findOneMovie({movieName: req.body.movieName},function(doc){
-		//若记录已经存在，则相应一个字符串'exists'
-		if(doc){
-			conflict_id = doc._id;
-			res.end('exists')
-		}else{
-			var id = movieData.primeKey(req.body.movieName)
-			var data = packReqData(req, id);
-			movieData.addOneMovie(data);
-			res.end('inserted');
-		}
-	})
-});
-app.post('/addOverride', function(req,res){
-	var a = req.body.movieName;
-	var data = packReqData(req, conflict_id);
-	conflict_id = "";
-	movieData.updateOneMovie(data);
-	res.end('overrided')
-});
+var conflict_id_create = "";
+var conflict_id_update = "";
+// app.post('/addRecords',function(req,res){
+// 	movieData.findOneMovie({movieName: req.body.movieName},function(doc){
+// 		//若记录已经存在，则相应一个字符串'exists'
+// 		if(doc){
+// 			conflict_id = doc._id;
+// 			res.end('exists')
+// 		}else{
+// 			var id = movieData.primeKey(req.body.movieName)
+// 			var data = packReqData(req, id);
+// 			movieData.addOneMovie(data);
+// 			res.end('inserted');
+// 		}
+// 	})
+// });
+// app.post('/addOverride', function(req,res){
+// 	var a = req.body.movieName;
+// 	var data = packReqData(req, conflict_id);
+// 	conflict_id = "";
+// 	movieData.updateOneMovie(data);
+// 	res.end('overrided')
+// });
 
 //查询所有数据
 app.get('/dataReview/findAllMovies',function(req,res){
@@ -173,11 +174,74 @@ app.get('/movieName/:movieName',function(req,res){
 	});
 });
 //修改数据
-	app.post('/updateRecord',function(req,res){
-		// movieData.updateOneMovie()
+	// app.post('/updateRecord',function(req,res){
+	// 	// movieData.updateOneMovie()
 		
-		var data = packReqData(req,req.body._id);
-		movieData.updateOneMovie(data);
-		res.end('updated');
+	// 	var data = packReqData(req,req.body._id);
+	// 	movieData.updateOneMovie(data);
+	// 	res.end('updated');
+	// });
+//接到提交的数据
+	app.post('/submit',function(req,res){
+		//若记录已经存在，则响应一个字符串'exists'
+		if(req.body.operation==='update'){
+		    movieData.findOneMovie({_id: req.body._id},function(doc){
+
+			if(doc.movieName===req.body.movieName){
+				var data = packReqData(req,req.body._id);
+				movieData.updateOneMovie(data);
+				res.end('updated');
+			}else{
+				movieData.findOneMovie({movieName: req.body.movieName},function(doc1){
+					if(doc1){
+						conflict_id_update = doc1._id;
+						res.end('exists');
+					}else{
+						var data = packReqData(req,req.body._id);
+						movieData.updateOneMovie(data);
+						res.end('updated');
+					}
+				})
+				
+			}
+		})
+		}else if(req.body.operation==='create'){
+			movieData.findOneMovie({movieName: req.body.movieName},function(doc){
+			if(doc){
+				conflict_id_create = doc._id;
+				res.end('exists')
+			}else{
+				var id = movieData.primeKey(req.body.movieName)
+				var data = packReqData(req, id);
+				movieData.addOneMovie(data);
+				res.end('inserted');
+			}
+		})
+		}else{
+			// res.status(404);
+			// res.send('404 - Not Found');
+			res.end('error');
+		}
 	});
+	app.post('/override',function(req,res){
+		if(req.body.operation==='update'){
+			var data = packReqData(req, conflict_id_update);
+			conflict_id_update = "";
+			movieData.updateOneMovie(data);
+			movieData.deleteOneMovie({_id: req.body._id});
+			res.end('overrided')
+		}else if(req.body.operation==='create'){
+			var data = packReqData(req, conflict_id_create);
+			conflict_id_create = "";
+			movieData.updateOneMovie(data);
+			res.end('overrided')
+		}else{
+			
+			res.end('error');
+		}
+	});
+	app.get('/deleteRecord',function(req,res){
+		movieData.deleteOneMovie(req.query);
+		res.end('deleted')
+	})
 app.use(express.static('public'));

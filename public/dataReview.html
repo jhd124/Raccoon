@@ -174,11 +174,42 @@
 <div class="modal-footer">
 	<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 	<input id="modify" type="button" class="btn btn-primary" value="修改"></input>
-	<input id="save"   type="button" class="btn btn-primary" value="保存"></input>
+	<input id="save" data-modiorcreate="modi" type="button" class="btn btn-primary" value="保存"></input>
+	<input id="delete" type="button" class="btn btn-primary" value="删除"></input>
 </div>
 
 </div>
 </div>
+</div>
+<!-- 提示确定删除？ -->
+<div class="modal fade bs-example-modal-sm" id="alert_delete" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content text-center">
+			<h4>您将要删除一条记录，确定要这样做吗？</h4>
+
+			<div class="modal-footer text-center">
+
+				<button type="button" id="sureToDelete" class="btn btn-primary" style="display: block; width: 100%;">确定删除</button>
+				
+				<button type="button" class="btn btn-primary" data-dismiss="modal" style="display: block; width: 100%; margin:5px 0 0 0;">取消此操作</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 提示确定保存修改？ -->
+<div class="modal fade bs-example-modal-sm" id="alert_modify" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content text-center">
+			<h4>您将要修改一条记录，确定要这样做吗？</h4>
+
+			<div class="modal-footer text-center">
+
+				<button type="button" id="sureToModify" class="btn btn-primary" style="display: block; width: 100%;">确定修改</button>
+				
+				<button type="button" class="btn btn-primary" data-dismiss="modal" style="display: block; width: 100%; margin:5px 0 0 0;">取消此操作</button>
+			</div>
+		</div>
+	</div>
 </div>
 <!-- 在记录存在时提示是否覆盖原有记录 -->
 <div class="modal fade bs-example-modal-sm" id="alert_override" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
@@ -192,21 +223,6 @@
 				<button type="button" class="btn btn-primary" id="override" style="display: block; width: 100%;">覆盖原有记录</button>
 	
 				<button type="button" class="btn btn-primary" data-dismiss="modal" style="display: block; width: 100%; margin:5px 0 0 0;">返回修改</button>
-			</div>
-		</div>
-	</div>
-</div>
-<!-- 提示确定保存修改？ -->
-<div class="modal fade bs-example-modal-sm" id="alert_modify" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" data-modiorcreate="modi">
-	<div class="modal-dialog modal-sm" role="document">
-		<div class="modal-content text-center">
-			<h4>您将要修改一条记录，确定要这样做吗？</h4>
-
-			<div class="modal-footer text-center">
-
-				<button type="button" id="sureToModify" class="btn btn-primary" style="display: block; width: 100%;">确定修改</button>
-				
-				<button type="button" class="btn btn-primary" data-dismiss="modal" style="display: block; width: 100%; margin:5px 0 0 0;">取消此操作</button>
 			</div>
 		</div>
 	</div>
