@@ -88,36 +88,37 @@ function packReqData(req,id){
 			}
 		return data;
 }
-
+//处理get查询请求
+/**
+ * /
+ * @param {any} numOfPage 每一页的条目数
+ * @param {any} currentPage 当前页码
+ */
+function queryOption(numOfPage,currentPage,sorter,filter) {
+    var opt = {
+        skipNum: numOfPage * (currentPage - 1),
+        limitNum: numOfPage,
+        sorter: sorter,
+        filter: filter
+    }
+    return opt;
+}
 
 //添加数据库条目
 var conflict_id_create = "";
 var conflict_id_update = "";
-// app.post('/addRecords',function(req,res){
-// 	movieData.findOneMovie({movieName: req.body.movieName},function(doc){
-// 		//若记录已经存在，则相应一个字符串'exists'
-// 		if(doc){
-// 			conflict_id = doc._id;
-// 			res.end('exists')
-// 		}else{
-// 			var id = movieData.primeKey(req.body.movieName)
-// 			var data = packReqData(req, id);
-// 			movieData.addOneMovie(data);
-// 			res.end('inserted');
-// 		}
-// 	})
-// });
-// app.post('/addOverride', function(req,res){
-// 	var a = req.body.movieName;
-// 	var data = packReqData(req, conflict_id);
-// 	conflict_id = "";
-// 	movieData.updateOneMovie(data);
-// 	res.end('overrided')
-// });
 
-//查询所有数据
-app.get('/dataReview/findAllMovies',function(req,res){
-	movieData.findMovies({},function(doc){
+
+//查询所有数据(加载页面时执行)
+app.get('/dataReview/findAllMovies', function (req, res) {
+    var numPerPage = parseInt(req.query.numPerPage)||30;
+    var currentPage = parseInt(req.query.currentPage)||1;
+    var sorter = JSON.parse(req.query.sorter) || { movieName: 1 };
+    var filter = JSON.parse(req.query.filter) || {};
+   	
+    var options = queryOption(numPerPage, currentPage, sorter,filter);
+    movieData.findMovies(options, function (doc,num) {
+        doc.push(num);
 		console.log(new Date().toLocaleString()+'|'+' 管理员查询数据\r\n')
 		res.end(JSON.stringify(doc));
 	})
@@ -186,7 +187,6 @@ app.get('/movieName/:movieName',function(req,res){
 		//若记录已经存在，则响应一个字符串'exists'
 		if(req.body.operation==='update'){
 		    movieData.findOneMovie({_id: req.body._id},function(doc){
-
 			if(doc.movieName===req.body.movieName){
 				var data = packReqData(req,req.body._id);
 				movieData.updateOneMovie(data);
@@ -242,6 +242,7 @@ app.get('/movieName/:movieName',function(req,res){
 	});
 	app.get('/deleteRecord',function(req,res){
 		movieData.deleteOneMovie(req.query);
+		console.log(req.query)
 		res.end('deleted')
 	})
 app.use(express.static('public'));

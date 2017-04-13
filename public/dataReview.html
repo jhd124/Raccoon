@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
@@ -14,6 +14,10 @@
 		.dataDetail>div{
 			margin-top: 0.5em;
 		}
+		thead th:hover{
+			background-color: #dddddd;
+			cursor : pointer;
+		}
 		@media screen and (max-width: 399px){
 			.dataDetail{text-align: center;}
 			
@@ -28,26 +32,47 @@
 </head>
 <body>
 	<div class="container">
-		<form>
-			<input type="search" name="search">
-		</form>
+		<section>
+			<select id="search_option">
+				<option>
+					电影中文名
+				</option>	
+				<option>
+					电影英文名
+				</option>
+				<option>
+					分类
+				</option>
+				<option>
+					国家/地区
+				</option>
+				<option>
+					导演
+				</option>
+			</select>
+			<input type="search" name="search"></input>
+			<button id="search">搜索</button>
+		</section>
 		<div class="table-responsive">
 			<table class="table table-bordered table-striped">
-				<thead>
+				<thead id='theadBtn'>
 					<tr>
-						<th>
+						<th data-thead="movieNameChinese">
 							影片名称
 						</th>
-						<th>
+                        <th data-thead="movieName">
+                            英文名称
+                        </th>
+						<th data-thead="catagory">
 							分类
 						</th>
-						<th>
+						<th data-thead="country">
 							国家/地区
 						</th>
-						<th>
+						<th data-thead="director">
 							导演
 						</th>
-						<th>
+						<th data-thead="actorChinese">
 							主演
 						</th>
 					</tr>
@@ -58,19 +83,20 @@
 			</table>
 		</div>
 		<nav aria-label="Page navigation">
-			<ul class="pagination">
+			<ul id="laura" class="pagination">
 				<li>
-					<a href="#" aria-label="Previous">
+					<a id="previous" href="#" aria-label="Previous">
 						<span aria-hidden="true">&laquo;</span>
 					</a>
 				</li>
-				<li><a href="#">1</a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li><a href="#">4</a></li>
-				<li><a href="#">5</a></li>
+				<li data-index="0"><a id="first" href="#">1</a></li>
+				<li data-index="1"><a href="#">2</a></li>
+				<li data-index="2"><a href="#">3</a></li>
+				<li data-index="3"><a href="#">4</a></li>
+				<li data-index="4"><a href="#">5</a></li>
+                <li data-index="5"><a id="last" href="#">6</a></li>
 				<li>
-					<a href="#" aria-label="Next">
+					<a id="next" href="#" aria-label="Next">
 						<span aria-hidden="true">&raquo;</span>
 					</a>
 				</li>
