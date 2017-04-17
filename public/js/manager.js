@@ -27,7 +27,14 @@ window.onload=function(){
 		pagination.queryDocuments.queryAjax(option);
 	}
 	})
-
+	//搜索
+	search.onclick=function(){
+		var key = search_key.value;
+		var value = search_value.value;
+		setSearchFilter(key,value);
+		pagination.setCurrentPage(1);
+	pagination.setActive(0);
+	}
 
 	//初始化分页按钮	
 	
@@ -385,14 +392,25 @@ var pagination = {
 }
 };
 
-// var raccoonSearch = {
-
-
-// 	search : function(){
-// 		var filter;
-// 		switch(search_option.value){
-// 			case '电影中文名':
-// 			filter=JSON.parse("")
-// 		}
-// 	}
-// }
+ function setSearchFilter(key, value){
+	var filter;
+	switch(key){
+		case '电影中文名':
+		filter=JSON.parse("{\"movieNameChinese\":\""+value+"\"}");
+		break;
+		case "电影英文名":
+		filter=JSON.parse("{\"movieName\":\""+value+"\"}");
+		break;
+		case "分类":
+		filter=JSON.parse("{\"catagory\":\""+value+"\"}");
+		break;
+		case "国家/地区":
+		filter=JSON.parse("{\"country\":\""+value+"\"}");
+		break;
+		case "导演":
+		filter=JSON.parse("{\"director\":\""+value+"\"}");
+		break;
+	}
+	console.log(filter)
+	pagination.queryDocuments.filter=filter;
+}
