@@ -4,6 +4,8 @@ var assert = require('assert');
 var template = require('art-template');
 var bodyparser = require('body-parser');
 var movieData = require('./lib/movieDataManipulate');
+var credentials = require('./lib/credentials.js')
+app.use(require('cookie-parser')(credentials.cookieSecret))
 
 /*设置bodyparser中间件，用以解析post请求*/
 app.use(bodyparser.json());
@@ -125,6 +127,7 @@ app.get('/dataReview/findAllMovies', function (req, res) {
 });
 
 app.get('/movieName/:movieName',function(req,res){
+	if(req.params.movieName){
 	var get_filter = {movieName:req.params.movieName};
 	var a = req.params.movieName;
 	movieData.findOneMovie({movieName: a},function(doc){
@@ -173,6 +176,9 @@ app.get('/movieName/:movieName',function(req,res){
 
 	 res.end();
 	});
+}else{
+	res.end("这段视频不见了");
+}
 });
 //修改数据
 	// app.post('/updateRecord',function(req,res){
@@ -246,3 +252,16 @@ app.get('/movieName/:movieName',function(req,res){
 		res.end('deleted')
 	})
 app.use(express.static('public'));
+//如果请求没有进入上述任何一个路由，将落尽这个404中间件
+app.use(function(req,res){
+	res.type('text/plain');
+	res.status(404);
+	res.send('404-Not Found')
+})
+//定制500
+app.use(function(err,req,res,next){
+	console.error(err.stack);
+	res.type('text/plain');
+	res.status(500);
+	res.send('500-Server Error')
+})
