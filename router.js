@@ -4,16 +4,18 @@ var assert = require('assert');
 var template = require('art-template');
 var bodyparser = require('body-parser');
 var movieData = require('./lib/movieDataManipulate');
-var credentials = require('./lib/credentials.js')
-app.use(require('cookie-parser')(credentials.cookieSecret))
+var credentials = require('./lib/credentials.js');
+var user = require('./lib/user.js');
+var admin = new user();
+admin.init();
+app.use(require('cookie-parser')(credentials.cookieSecret));
 
 /*设置bodyparser中间件，用以解析post请求*/
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: false }));
 
-
-
-
+//登陆用的随机序列
+var rs="";
 // ----------------引入模板引擎----------------
 template.config('base', '');
 template.config('extname', '.html');
@@ -40,7 +42,17 @@ function getAddress(){
 	}
 }
 
-
+//generate random code
+function randomString(len) {
+　　len = len || 32;
+　　var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';    /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+　　var maxPos = $chars.length;
+　　var pwd = '';
+　　for (i = 0; i < len; i++) {
+　　　　pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+　　}
+　　return pwd;
+}
 
 
 // start a server
@@ -122,6 +134,7 @@ app.get('/dataReview/findAllMovies', function (req, res) {
     movieData.findMovies(options, function (doc,num) {
         doc.push(num);
 		console.log(new Date().toLocaleString()+'|'+' 管理员查询数据\r\n')
+		res.cookie('kindle','yoyoyoyoyoyoyo',{signed:true})
 		res.end(JSON.stringify(doc));
 	})
 });
@@ -251,6 +264,37 @@ app.get('/movieName/:movieName',function(req,res){
 		console.log(req.query)
 		res.end('deleted')
 	})
+	app.post('/login',function(req,res){
+
+		var password = req.body.password;
+		var userName = req.body.userName;
+		if (admin._id===userName&&admin.password===password) {
+		rs = randomString();
+		res.cookie('lid',rs);
+		res.render('dataReview');
+	}else if(admin._id!==userName){
+		res.send('请检查用户名')
+	}else{
+		res.send("请检查密码")
+	}
+	})
+	app.get('/logout',function(req,res){
+		res.cookie('lid',"0");
+		res.render("index")
+	})
+	app.post('/passwordModify',function(req,res){
+		admin.setPassword(req.body.password);
+		admin.save();
+		res.send('success');
+	})
+	app.get("/dataReview.html",function(req,res){
+		if(req.cookies.lid!==rs){
+			res.send("请登陆");
+		}else{
+			res.render("dataReview")
+		}
+	})
+
 app.use(express.static('public'));
 //如果请求没有进入上述任何一个路由，将落尽这个404中间件
 app.use(function(req,res){

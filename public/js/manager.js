@@ -1,6 +1,3 @@
-
-// var totalPage=6;
-// var recordsPerPage=30;
 window.onload=function(){
 	//-------初始化页面
 	pagination.queryDocuments.setSorter({movieName:1});
