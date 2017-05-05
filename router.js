@@ -5,6 +5,7 @@ var template = require('art-template');
 var bodyparser = require('body-parser');
 var movieData = require('./lib/movieDataManipulate');
 var credentials = require('./lib/credentials.js');
+var spider = require('./lib/spider.js')
 var user = require('./lib/user.js');
 var admin = new user();
 admin.init();
@@ -82,20 +83,19 @@ function packReqData(req,id){
 				playwritter: req.body.playwritter,
 				country: req.body.country,
 				publisher: req.body.publisher,
-				scoreDouban: req.body.scoreDouban,
-				scoreIMDB: req.body.scoreIMDB,
-				actorChinese: req.body.actorChinese,
-				actorEn: req.body.actorEn,
-				mainMaleRole: req.body.mainMaleRole,
-				actressChinese: req.body.actressChinese,
-				actressEn: req.body.actressEn,
-				mainFemaleRole: req.body.mainFemaleRole,
-				supportingActorChinese: req.body.supportingActorChinese,
-				supportingActorEn: req.body.supportingActorEn,
-				supportingMaleRole: req.body.supportingMaleRole,
-				supportingActressChinese: req.body.supportingActressChinese,
-				supportingActressEn: req.body.supportingActressEn,
-				supportingFemaleRole: req.body.supportingFemaleRole,
+				rating: req.body.rating,
+				actor1Chinese: req.body.actor1Chinese,
+				actor1En: req.body.actor1En,
+				actor2Chinese: req.body.actor2Chinese,
+				actor2En: req.body.actor2En,
+				actor3Chinese: req.body.actor3Chinese,
+				actor3En: req.body.actor3En,
+				actor4Chinese: req.body.actor4Chinese,
+				actor4En: req.body.actor4En,
+				role1: req.body.role1,
+				role2: req.body.role2,
+				role3: req.body.role3,
+				role4: req.body.role4,
 				year: req.body.year,
 				catagory: req.body.catagory,
 				story: req.body.story
@@ -159,34 +159,32 @@ app.get('/movieName/:movieName',function(req,res){
 			playwritter: doc.playwritter,
 			country: doc.country,
 			publisher: doc.publisher,
-			scoreDouban: doc.scoreDouban,
-			scoreIMDB: doc.scoreIMDB,
-			actorChinese: doc.actorChinese,
-			actorEn: doc.actorEn,
-			actorPath:'http://'+address+':'+port+'/movie/'+doc.movieName+'/actors/'+deleteSpace(doc.actorEn)+'.jpg',
-			mainMaleRole: doc.mainMaleRole,
-			actressChinese: doc.actressChinese,
-			actressEn: doc.actressEn,
-			actressPath:'http://'+address+':'+port+'/movie/'+doc.movieName+'/actors/'+deleteSpace(doc.actressEn)+'.jpg',
-			mainFemaleRole: doc.mainFemaleRole,
-			supportingActorChinese: doc.supportingActorChinese,
-			supportingActorEn: doc.supportingActorEn,
-			supportingActorPath:'http://'+address+':'+port+'/movie/'+doc.movieName+'/actors/'+deleteSpace(doc.supportingActorEn)+'.jpg',
-			supportingMaleRole: doc.supportingMaleRole,
-			supportingActressChinese: doc.supportingActressChinese,
-			supportingActressEn: doc.supportingActressEn,
-			supportingActressPath:'http://'+address+':'+port+'/movie/'+doc.movieName+'/actors/'+deleteSpace(doc.supportingActressEn)+'.jpg',
-			supportingFemaleRole: doc.supportingFemaleRole,
-			mainMaleRolePath: 'http://'+address+':'+port+'/movie/'+doc.movieName+'/roles/'+doc.mainMaleRole+'.jpg',
-			mainFemaleRolePath: 'http://'+address+':'+port+'/movie/'+doc.movieName+'/roles/'+doc.mainFemaleRole+'.jpg',
-			supportingMaleRolePath: 'http://'+address+':'+port+'/movie/'+doc.movieName+'/roles/'+doc.supportingMaleRole+'.jpg',
-			supportingFemaleRolePath: 'http://'+address+':'+port+'/movie/'+doc.movieName+'/roles/'+doc.supportingFemaleRole+'.jpg',
+			rating: doc.rating,
+			actor1Chinese: doc.actor1Chinese,
+			actor1En: doc.actor1En,
+			actor1Path:'http://'+address+':'+port+'/movie/'+doc.movieName+'/actors/'+deleteSpace(doc.actor1En)+'.jpg',
+			actor2Chinese: doc.actor2Chinese,
+			actor2En: doc.actor2En,
+			actor2Path:'http://'+address+':'+port+'/movie/'+doc.movieName+'/actors/'+deleteSpace(doc.actor2En)+'.jpg',
+			actor3Chinese: doc.actor3Chinese,
+			actor3En: doc.actor3En,
+			actor3Path:'http://'+address+':'+port+'/movie/'+doc.movieName+'/actors/'+deleteSpace(doc.actor3En)+'.jpg',
+			actor4Chinese: doc.actor4Chinese,
+			actor4En: doc.actor4En,
+			actor4Path:'http://'+address+':'+port+'/movie/'+doc.movieName+'/actors/'+deleteSpace(doc.actor4En)+'.jpg',
+			role1: doc.role1,
+			role2: doc.role2,
+			role3: doc.role3,
+			role4: doc.role4,
+			role1Path: 'http://'+address+':'+port+'/movie/'+doc.movieName+'/roles/'+doc.role1+'.jpg',
+			role2Path: 'http://'+address+':'+port+'/movie/'+doc.movieName+'/roles/'+doc.role2+'.jpg',
+			role3Path: 'http://'+address+':'+port+'/movie/'+doc.movieName+'/roles/'+doc.role3+'.jpg',
+			role4Path: 'http://'+address+':'+port+'/movie/'+doc.movieName+'/roles/'+doc.role4+'.jpg',
 			story: doc.story
 		};
 	  //渲染模板
 	 console.log(new Date().toLocaleString()+'| Client '+req.ip+'| request \"'+doc.movieName+'\" \r\n');
 	 res.render('movie',data);
-
 	 res.end();
 	});
 }else{
@@ -271,8 +269,10 @@ app.get('/movieName/:movieName',function(req,res){
 		if (admin._id===userName&&admin.password===password) {
 		rs = randomString();
 		res.cookie('lid',rs);
-		res.render('dataReview');
+		res.redirect('/dataReview.html');
 	}else if(admin._id!==userName){
+		console.log(admin._id);
+		console.log(userName)
 		res.send('请检查用户名')
 	}else{
 		res.send("请检查密码")
@@ -293,6 +293,18 @@ app.get('/movieName/:movieName',function(req,res){
 		}else{
 			res.render("dataReview")
 		}
+	})
+	app.get("/retriveMovieData",function(req,res){
+		// if(req.cookies.lid!==rs){
+		// 	res.send("请登陆");
+		// }else{
+			var url = req.body.MtimeUrl
+			spider.getMtimeData(url,function(data){
+
+				var movieData = JSON.stringify(data)
+				res.send(movieData);
+			})
+		// }
 	})
 
 app.use(express.static('public'));
