@@ -50,9 +50,19 @@
 				<option>
 					导演
 				</option>
+				<option>
+					Mtime搜索
+				</option>
 			</select>
 			<input type="search" id="search_value"></input>
 			<button id="search">搜索</button>
+		</section>
+		<!-- 智能添加 -->
+		<section>
+			<span>
+				<input type="search" id="MtimeUrl">
+				<button id="smartSearch">智能添加</button>
+			</span>
 		</section>
 		<div class="table-responsive">
 			<table class="table table-bordered table-striped">
@@ -104,8 +114,10 @@
 			</ul>
 		</nav>
 
-
 		<button id="createRecord" type="button" class="btn btn-primary btn-lg" >
+		  Launch demo modal
+		</button>
+		<button id="smartRecord" type="button" class="btn btn-primary btn-lg" >
 		  Launch demo modal
 		</button>
 		<!-- Modal -->
@@ -147,47 +159,44 @@
 									<span class="col-xs-6">上映年份:</span><input type="text" class="dataElement" id="year" name="year">
 								</div>
 								<div class="col-xs-12 col-sm-6">
-									<span class="col-xs-6">豆瓣评分:</span><input type="text" class="dataElement" id="scoreDouban" name="scoreDouban">
+									<span class="col-xs-6">Mtime评分:</span><input type="text" class="dataElement" id="rating" name="scoreDouban">
 								</div>
 								<div class="col-xs-12 col-sm-6">
-									<span class="col-xs-6">IMDB评分:</span><input type="text" class="dataElement" id="scoreIMDB" name="scoreIMDB">
+									<span class="col-xs-6">男主角(中文名):</span><input type="text" class="dataElement" id="actor1Chinese" name="actorChinese">
 								</div>
 								<div class="col-xs-12 col-sm-6">
-									<span class="col-xs-6">男主角(中文名):</span><input type="text" class="dataElement" id="actorChinese" name="actorChinese">
-								</div>
-								<div class="col-xs-12 col-sm-6">
-									<span class="col-xs-6">男主角(英文名):</span><input type="text" class="dataElement" id="actorEn" name="actorEn">
+									<span class="col-xs-6">男主角(英文名):</span><input type="text" class="dataElement" id="actor1En" name="actor1En">
 								</div>
 								<div class="col-xs-12 col-sm-6  ">
-									<span class="col-xs-6">女主角(中文名):</span><input type="text" class="dataElement" id="actressChinese" name="actressChinese">
+									<span class="col-xs-6">女主角(中文名):</span><input type="text" class="dataElement" id="actor2Chinese" name="actor2Chinese">
 								</div>
 								<div class="col-xs-12 col-sm-6">
-									<span class="col-xs-6">女主角(英文名):</span><input type="text" class="dataElement" id="actressEn" name="actressEn">
+									<span class="col-xs-6">女主角(英文名):</span><input type="text" class="dataElement" id="actor2En" name="actor2En">
 								</div>
 								<div class="col-xs-12 col-sm-6">
-									<span class="col-xs-6">男配角(中文名):</span><input type="text" class="dataElement" id="supportingActorChinese" name="supportingActorChinese">
+									<span class="col-xs-6">男配角(中文名):</span><input type="text" class="dataElement" id="actor3Chinese" name="actor3Chinese">
 								</div>
 								<div class="col-xs-12 col-sm-6">
-									<span class="col-xs-6">男配角(英文名):</span><input type="text" class="dataElement" id="supportingActorEn" name="supportingActorEn">
+									<span class="col-xs-6">男配角(英文名):</span><input type="text" class="dataElement" id="actor3En" name="actor3En">
 								</div>
 								<div class="col-xs-12 col-sm-6">
-									<span class="col-xs-6">配角1(中文名):</span><input type="text" class="dataElement" id="supportingActressChinese" name="supportingActressChinese">
+									<span class="col-xs-6">配角1(中文名):</span><input type="text" class="dataElement" id="actor4Chinese" name="actor4Chinese">
 								</div>
 								<div class="col-xs-12 col-sm-6">
 
-									<span class="col-xs-6">配角2(英文名):</span><input type="text" class="dataElement" id="supportingActressEn" name="supportingActressEn">
+									<span class="col-xs-6">配角2(英文名):</span><input type="text" class="dataElement" id="actor4En" name="actor4En">
 								</div>
 								<div class="col-xs-12 col-sm-6">
-									<span class="col-xs-6">主要人物1:</span><input type="text" class="dataElement" id="mainMaleRole" name="mainMaleRole">
+									<span class="col-xs-6">主要人物1:</span><input type="text" class="dataElement" id="role1" name="role1">
 								</div>
 								<div class="col-xs-12 col-sm-6">
-									<span class="col-xs-6">主要人物2:</span><input type="text" class="dataElement" id="mainFemaleRole" name="mainFemaleRole">
+									<span class="col-xs-6">主要人物2:</span><input type="text" class="dataElement" id="role2" name="role2">
 								</div>
 								<div class="col-xs-12 col-sm-6">
-									<span class="col-xs-6">辅助角色1:</span><input type="text" class="dataElement" id="supportingMaleRole" name="supportingMaleRole">
+									<span class="col-xs-6">辅助角色1:</span><input type="text" class="dataElement" id="role3" name="role3">
 								</div>
 								<div class="col-xs-12 col-sm-6">
-									<span class="col-xs-6">辅助角色2:</span><input type="text" class="dataElement" id="supportingFemaleRole" name="supportingFemaleRole">
+									<span class="col-xs-6">辅助角色2:</span><input type="text" class="dataElement" id="role4" name="role4">
 								</div>
 								<div class="col-xs-12">
 									<span class="col-xs-6">剧情简介:</span><textarea id="story" name="story" class="dataElement" rows="10" cols="100" style="width: 90%;"></textarea>

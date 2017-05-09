@@ -298,7 +298,10 @@ app.get('/movieName/:movieName',function(req,res){
 		// if(req.cookies.lid!==rs){
 		// 	res.send("请登陆");
 		// }else{
-			var url = req.body.MtimeUrl
+			 var url = req.query.MtimeUrl
+			//var url = 'http://movie.mtime.com/10964/'
+			// spider.setSpiderUrl('http://movie.mtime.com/10964/')
+			console.log(url)
 			spider.getMtimeData(url,function(data){
 
 				var movieData = JSON.stringify(data)

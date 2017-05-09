@@ -21,18 +21,43 @@ window.onload=function(){
 		var sorter = JSON.parse('{"'+key+'":1}');
 		var option = {sorter:sorter};
 		e.onclick=function(){
-		pagination.queryDocuments.queryAjax(option);
-	}
+			pagination.queryDocuments.queryAjax(option);
+		}
 	})
 	//搜索
 	search.onclick=function(){
 		var key = search_key.value;
 		var value = search_value.value;
-		setSearchFilter(key,value);
-		pagination.setCurrentPage(1);
-	pagination.setActive(0);
+		if(key!=='Mtime搜索'){
+			setSearchFilter(key,value);
+			pagination.setCurrentPage(1);
+			pagination.setActive(0);
+		}else{
+			var url = "http://search.mtime.com/search/?q="+value;
+			window.open(url);
+		}
 	}
-
+	//智能添加
+	smartSearch.onclick = function(){
+		$('#modify').hide();
+		$('#save').show();
+		$('#myModal').modal('show');
+		$('#save').attr('data-modiorcreate','create');
+		var dataElement = $(".dataElement");
+		dataElement.removeAttr('value');
+		for(var j = 0; j<dataElement.length; j++){
+			dataElement[j].disabled= false;
+		}
+		var url = MtimeUrl.value;
+		spider(url,function(res){
+			var data = JSON.parse(res);
+			$('#myModal').modal('show');
+			
+			for(var key in data){
+				$('#'+key).get(0).value=data[key]
+			}
+		})
+	}
 	//初始化分页按钮	
 	
 	previous.onclick = function(){
@@ -40,7 +65,7 @@ window.onload=function(){
 			pagination.flip(-1);
 		}else{
 			if($('.active')[0].previousElementSibling.firstChild.click)
-			$('.active')[0].previousElementSibling.firstChild.click();
+				$('.active')[0].previousElementSibling.firstChild.click();
 		}
 	}
 	next.onclick = function(){
@@ -50,7 +75,7 @@ window.onload=function(){
 		}else{
 			// pagination.flip(0);
 			if($('.active')[0].nextElementSibling.firstChild.click)
-			$('.active')[0].nextElementSibling.firstChild.click();
+				$('.active')[0].nextElementSibling.firstChild.click();
 		}
 	}
 	pagination.normalbtns.forEach(function(e){
@@ -60,13 +85,13 @@ window.onload=function(){
 			}else if(this.firstChild.innerHTML=="..."&&this.firstChild.id=='last'){
 				pagination.flip(4)
 			}else{
-			var index = parseInt(this.getAttribute('data-index'));
-			pagination.setActive(index);
+				var index = parseInt(this.getAttribute('data-index'));
+				pagination.setActive(index);
+			}
 		}
-	}
 	})
 				// console.log(pagination.currentPage)
-			
+
 	//给按键绑定点击函数
 
 	//分页结束---------------------
@@ -143,10 +168,7 @@ window.onload=function(){
 		deleteRecord(data);
 		$('#alert_delete').modal('hide');
 	})
-
 	//-------搜索------
-
-
 }
 
 //---------方法--------
@@ -224,6 +246,15 @@ function updateRecord(data){
 	})
 }
 
+function spider(MtimeUrl,callback){
+	$.ajax({
+		type: 'GET',
+		url: "/retriveMovieData?MtimeUrl="+MtimeUrl,
+		success: function(res){
+		callback(res)
+		}
+	})
+}
 //填表
 function tableGenerate(data){
 	var html = "";
@@ -295,8 +326,8 @@ var pagination = {
 		this.normalbtns[this.currentIndex].removeAttribute('class');
 		this.normalbtns[lableIndex].setAttribute('class','active');
 		this.setCurrentIndex(lableIndex);
-			if(this.normalbtns[lableIndex].firstChild.getAttribute('data-num'))
-		this.setCurrentPage(parseInt(this.normalbtns[lableIndex].firstChild.getAttribute('data-num')));
+		if(this.normalbtns[lableIndex].firstChild.getAttribute('data-num'))
+			this.setCurrentPage(parseInt(this.normalbtns[lableIndex].firstChild.getAttribute('data-num')));
 		this.queryDocuments.queryAjax({});
 	},
 	hideBtn: function(lableIndex){
@@ -335,29 +366,29 @@ var pagination = {
 		}else if(this.pointer+n>this.totalPage){
 			newPointer=this.totalPage;
 		}else{
-		 newPointer=this.pointer+n;
+			newPointer=this.pointer+n;
 		}
 		
-			this.setPointer(newPointer);
-			this.displayBtns();
-			var btnShown = document.querySelectorAll("[data-num]");
-			this.setActive(parseInt(btnShown.length/2));
-			console.log(parseInt(btnShown.length/2))
+		this.setPointer(newPointer);
+		this.displayBtns();
+		var btnShown = document.querySelectorAll("[data-num]");
+		this.setActive(parseInt(btnShown.length/2));
+		console.log(parseInt(btnShown.length/2))
 
 	},
 
 
- queryDocuments : {
-	filter:{},
-	sorter:{},
+	queryDocuments : {
+		filter:{},
+		sorter:{},
 
-	setFilter: function(filter){
-		this.filter = filter;
-	},
+		setFilter: function(filter){
+			this.filter = filter;
+		},
 
-	setSorter: function(sorter){
-		this.sorter = sorter;
-	},
+		setSorter: function(sorter){
+			this.sorter = sorter;
+		},
 	//生成链接
 	generateQueryUrl: function(){
 		var filter = JSON.stringify(this.filter)||'{}';
@@ -370,26 +401,26 @@ var pagination = {
 
 	queryAjax: function(option){
 		if(option.filter)
-		{this.setFilter(option.filter)};
+			{this.setFilter(option.filter)};
 		if(option.sorter)
-		{this.setSorter(option.sorter)};
+			{this.setSorter(option.sorter)};
 		var url = this.generateQueryUrl();
 		$.ajax({
 			url : url,
 			success : function(res){
-			var data = JSON.parse(res);
-            tableGenerate(data);
-            var totalRecords = data[data.length-1];
-            var totalPage = totalRecords%pagination.recordsPerPage==0?totalRecords/pagination.recordsPerPage:parseInt(totalRecords/pagination.recordsPerPage)+1;
-            pagination.setTotalPage(totalPage);
-            pagination.displayBtns();
+				var data = JSON.parse(res);
+				tableGenerate(data);
+				var totalRecords = data[data.length-1];
+				var totalPage = totalRecords%pagination.recordsPerPage==0?totalRecords/pagination.recordsPerPage:parseInt(totalRecords/pagination.recordsPerPage)+1;
+				pagination.setTotalPage(totalPage);
+				pagination.displayBtns();
 			}
 		})
 	}
 }
 };
 
- function setSearchFilter(key, value){
+function setSearchFilter(key, value){
 	var filter;
 	switch(key){
 		case '电影中文名':
@@ -407,7 +438,8 @@ var pagination = {
 		case "导演":
 		filter=JSON.parse("{\"director\":\""+value+"\"}");
 		break;
+		//case "Mtime搜索":
+
 	}
-	console.log(filter)
 	pagination.queryDocuments.filter=filter;
 }
