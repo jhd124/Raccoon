@@ -43,21 +43,27 @@ window.onload=function(){
 		$('#save').show();
 		$('#myModal').modal('show');
 		$('#save').attr('data-modiorcreate','create');
+		$('#save').hide();
+		$('#smartsave').show();
 		var dataElement = $(".dataElement");
 		dataElement.removeAttr('value');
 		for(var j = 0; j<dataElement.length; j++){
 			dataElement[j].disabled= false;
 		}
 		var url = MtimeUrl.value;
-		spider(url,function(res){
+		spider(url,'q',function(res){
 			var data = JSON.parse(res);
 			$('#myModal').modal('show');
-			
 			for(var key in data){
 				$('#'+key).get(0).value=data[key]
 			}
 		})
 	}
+	$('#smartsave').click(function(){
+		$('#save').click()
+		var url = MtimeUrl.value;
+		spider(url,'s')
+	})
 	//初始化分页按钮	
 	
 	previous.onclick = function(){
@@ -90,10 +96,6 @@ window.onload=function(){
 			}
 		}
 	})
-				// console.log(pagination.currentPage)
-
-	//给按键绑定点击函数
-
 	//分页结束---------------------
 
 	//--------模态框------------
@@ -110,7 +112,7 @@ window.onload=function(){
 	$('#save').click(function(){
 		if($('#save')[0].dataset.modiorcreate==='modi'){
 			$('#alert_modify').modal();
-		}else{
+		}else if($('#save')[0].dataset.modiorcreate==='create'){
 			var data = collectFormData('create');
 			addRecords(data);
 		}
@@ -120,6 +122,9 @@ window.onload=function(){
 		$('#save').hide();
 		$('#modify').show();
 		$('#save')[0].dataset.modiorcreate='modi';
+		$('#delete').get(0).style.display='none';
+		$('#smartsave').get(0).style.display='none';
+		clearForm();
 	});
 	$('#alert_override').on('hidden.bs.modal',function(e){
 		$('body').attr('class','modal-open');
@@ -246,14 +251,22 @@ function updateRecord(data){
 	})
 }
 
-function spider(MtimeUrl,callback){
+function spider(MtimeUrl,flag,callback){
 	$.ajax({
 		type: 'GET',
-		url: "/retriveMovieData?MtimeUrl="+MtimeUrl,
+		url: "/retriveMovieData?MtimeUrl="+MtimeUrl+'&operation='+flag,
 		success: function(res){
 		callback(res)
 		}
 	})
+}
+//清表
+function clearForm(){
+	var dataElement = $(".dataElement");
+		for(var j = 0; j<dataElement.length-1; j++){
+			dataElement[j].value = "";
+		}
+		story.value=""
 }
 //填表
 function tableGenerate(data){
@@ -270,7 +283,8 @@ function tableGenerate(data){
 		"</td><td>"+
 		data[i].director+
 		"</td><td>"+
-		data[i].actorChinese+"|"+data[i].actressChinese+"|"+data[i].supportingActorChinese+"|"+data[i].supportingActressChinese+
+		(data[i].actor1Chinese?data[i].actor1Chinese:data[i].actor1En)+"|"+(data[i].actor2Chinese?data[i].actor2Chinese:data[i].actor2En)+"|"
+		+(data[i].actor3Chinese?data[i].actor3Chinese:data[i].actor3En)+"|"+(data[i].actor4Chinese?data[i].actor4Chinese:data[i].actor4En)+
 		"</td></tr>"
 	}
 	$('#dataList')[0].innerHTML = html;
@@ -280,14 +294,15 @@ function tableGenerate(data){
 	var dataList_row=$('#dataList')[0];
 	$('#dataList').children().click(function(){
 		$('#myModal').modal('show');
+		$('#delete').get(0).style.display='inline-block';
 		var index = this.id;
 		var dataElement = $(".dataElement");
 		for(var j = 0; j<dataElement.length-1; j++){
 			var data_id = dataElement[j].id;
-			dataElement[j].setAttribute('value',data[index][data_id]);
+			dataElement[j].value = data[index][data_id];
 			dataElement[j].disabled = 'disabled';
 		}
-		story.innerHTML=data[index].story;
+		story.value=data[index].story;
 		dataElement[j].disabled = 'disabled';
 	});
 }
