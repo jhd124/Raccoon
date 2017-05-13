@@ -9,6 +9,7 @@ var credentials = require('./lib/credentials.js');
 var spider = require('./lib/spider.js')
 var user = require('./lib/user.js');
 var admin = new user();
+var normalizeFileName = require('./lib/normalizeFileName');
 admin.init();
 app.use(require('cookie-parser')(credentials.cookieSecret));
 
@@ -145,17 +146,17 @@ app.get('/movieName/:movieName',function(req,res){
 		var get_filter = {movieName:req.params.movieName};
 		var a = req.params.movieName;
 		movieData.findOneMovie({movieName: a},function(doc){
-
+			var rootUrl = 'http://'+address+':'+port+'/movie/'+normalizeFileName(doc.movieName);
 			var address = getAddress();
 			var port = server.address().port;
 			var data = {
 				CSS1: 'http://'+address+':'+port+'/css/bootstrap.min.css',
 				CSS2: 'http://'+address+':'+port+'/css/style.css',
 				logoPath:'http://'+address+':'+port+'/img/logo.png',
-				moviePath: 'http://'+address+':'+port+'/movie/'+doc.movieName+'.mp4',
+				moviePath: rootUrl+'.mp4',
 				movieName: doc.movieName,
 				movieNameChinese: doc.movieNameChinese,
-				posterPath:'http://'+address+':'+port+'/movie/'+doc.movieName+'/poster.jpg',
+				posterPath:rootUrl+'/poster.jpg',
 				director: doc.director,
 				playwritter: doc.playwritter,
 				country: doc.country,
@@ -163,24 +164,24 @@ app.get('/movieName/:movieName',function(req,res){
 				rating: doc.rating,
 				actor1Chinese: doc.actor1Chinese,
 				actor1En: doc.actor1En,
-				actor1Path:'http://'+address+':'+port+'/movie/'+doc.movieName+'/actors/'+deleteSpace(doc.actor1En)+'.jpg',
+				actor1Path:rootUrl+'/actors/'+normalizeFileName(doc.actor1En)+'.jpg',
 				actor2Chinese: doc.actor2Chinese,
 				actor2En: doc.actor2En,
-				actor2Path:'http://'+address+':'+port+'/movie/'+doc.movieName+'/actors/'+deleteSpace(doc.actor2En)+'.jpg',
+				actor2Path:rootUrl+'/actors/'+normalizeFileName(doc.actor2En)+'.jpg',
 				actor3Chinese: doc.actor3Chinese,
 				actor3En: doc.actor3En,
-				actor3Path:'http://'+address+':'+port+'/movie/'+doc.movieName+'/actors/'+deleteSpace(doc.actor3En)+'.jpg',
+				actor3Path:rootUrl+'/actors/'+normalizeFileName(doc.actor3En)+'.jpg',
 				actor4Chinese: doc.actor4Chinese,
 				actor4En: doc.actor4En,
-				actor4Path:'http://'+address+':'+port+'/movie/'+doc.movieName+'/actors/'+deleteSpace(doc.actor4En)+'.jpg',
+				actor4Path:rootUrl+'/actors/'+normalizeFileName(doc.actor4En)+'.jpg',
 				role1: doc.role1,
 				role2: doc.role2,
 				role3: doc.role3,
 				role4: doc.role4,
-				role1Path: 'http://'+address+':'+port+'/movie/'+doc.movieName+'/roles/'+doc.role1+'.jpg',
-				role2Path: 'http://'+address+':'+port+'/movie/'+doc.movieName+'/roles/'+doc.role2+'.jpg',
-				role3Path: 'http://'+address+':'+port+'/movie/'+doc.movieName+'/roles/'+doc.role3+'.jpg',
-				role4Path: 'http://'+address+':'+port+'/movie/'+doc.movieName+'/roles/'+doc.role4+'.jpg',
+				role1Path: rootUrl+'/roles/'+doc.role1+'.jpg',
+				role2Path: rootUrl+'/roles/'+doc.role2+'.jpg',
+				role3Path: rootUrl+'/roles/'+doc.role3+'.jpg',
+				role4Path: rootUrl+'/roles/'+doc.role4+'.jpg',
 				story: doc.story
 			};
 	  //渲染模板
@@ -272,8 +273,8 @@ app.post('/login',function(req,res){
 		res.cookie('lid',rs);
 		res.redirect('/dataReview.html');
 	}else if(admin._id!==userName){
-		console.log(admin._id);
-		console.log(userName)
+		// console.log(admin._id);
+		// console.log(userName)
 		res.send('请检查用户名')
 	}else{
 		res.send("请检查密码")
@@ -312,11 +313,13 @@ app.get("/retriveMovieData",function(req,res){
 				}else if(req.query.operation==='s'){
 					var actors = pic.actors;
 					var charas = pic.chatactors;
-					fs.mkdir('./public/movie/'+data.movieName,function(err){
+					var rootPath = './public/movie/'+normalizeFileName(data.movieName);
+					fs.mkdir(rootPath,function(err){
 						if(err){
 							console.log(err)
 						}else{
-							fs.mkdir('./public/movie/'+data.movieName+'/'+'actors',function(err){
+							spider.savePost(rootPath);
+							fs.mkdir(rootPath+'/'+'actors',function(err){
 								console.log(1)
 								if(err)
 									console.log(err);
@@ -324,7 +327,7 @@ app.get("/retriveMovieData",function(req,res){
 									spider.savePic(data.movieName,e);
 								})
 							})
-							fs.mkdir('./public/movie/'+data.movieName+'/'+'roles',function(err){
+							fs.mkdir(rootPath+'/'+'roles',function(err){
 								if(err)
 									console.log(err);
 								charas.forEach(function(e){
