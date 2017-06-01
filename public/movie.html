@@ -8,6 +8,21 @@
 	<link rel="stylesheet" href={{CSS2}}>
 </head>
 <body>
+	<script>
+		function actorimgError(image){  
+    // 隐藏图片  
+    		//	image.style.display = 'none';  
+    // 替换为默认图片  
+    		 image.setAttribute("src", "/img/blank_50X50.jpg");  
+		}  
+		function posterimgError(image){  
+    // 隐藏图片  
+    		//	image.style.display = 'none';  
+    // 替换为默认图片  
+    		 image.setAttribute("src", "/img/102091_270X405X4.jpg");  
+		}  
+	</script>
+
 	<div class="container">
 		<header>
 			<div class="col-xs-6">
@@ -29,7 +44,7 @@
 		</div>
 			<div class="col-xs-12 information">
 				<div class="col-xs-12 col-sm-6 col-md-4">
-					<img class="poster" src={{posterPath}} alt="poster">
+					<img class="poster" src={{posterPath}} alt="poster" onerror="posterimgError">
 				</div>
 				<div id="info" class="col-xs-12 col-sm-6 col-md-4">
 					<table class="table basic_info">
@@ -54,25 +69,25 @@
 					<div class="col-xs-9 ">
 						<ul class="actor">
 							<li>
-								<img src={{actor1Path}} alt={{actor1En}} class="actor_img">
+								<img src={{actor1Path}} alt={{actor1En}} class="actor_img"  onerror="actorimgError(this);">
 								<p>{{actor1Chinese}}</p>
 								<p>{{actor1En}}</p>
 								<p>饰 {{role1}}</p>
 							</li>
 							<li>
-								<img src={{actor2Path}} alt={{actor2En}} class="actor_img">
+								<img src={{actor2Path}} alt={{actor2En}} class="actor_img"  onerror="actorimgError(this);">
 								<p>{{actor2Chinese}}</p>
 								<p>{{actor2En}}</p>
 								<p>饰 {{role2}}</p>
 							</li>
 							<li>
-								<img src={{actor3Path}} alt={{actor3En}} class="actor_img">
+								<img src={{actor3Path}} alt={{actor3En}} class="actor_img"  onerror="actorimgError(this);">
 								<p>{{actor3Chinese}}</p>
 								<p>{{actor3En}}</p>
 								<p>饰 {{role3}}</p>
 							</li>
 							<li>
-								<img src={{actor4Path}} alt={{actor4En}} class="actor_img">
+								<img src={{actor4Path}} alt={{actor4En}} class="actor_img"  onerror="actorimgError(this);">
 								<p>{{actor4Chinese}}</p>
 								<p>{{actor4En}}</p>
 								<p>饰 {{role4}}</p>
@@ -80,10 +95,10 @@
 						</ul>
 					</div>
 					<div class="col-xs-3 charac_img">
-						<img src={{role1Path}} alt="long">
-						<img src={{role2Path}} alt="long">
-						<img src={{role3Path}} alt="long">
-						<img src={{role4Path}} alt="long">
+						<img src={{role1Path}} alt="role1" onerror="actorimgError(this);">
+						<img src={{role2Path}} alt="role2" onerror="actorimgError(this);">
+						<img src={{role3Path}} alt="role3" onerror="actorimgError(this);">
+						<img src={{role4Path}} alt="role4" onerror="actorimgError(this);">
 					</div>
 				</div>
 				<div class="col-xs-12 col-sm-12 col-md-4 intro">

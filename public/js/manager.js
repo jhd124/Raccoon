@@ -53,6 +53,7 @@ window.onload=function(){
 		var url = MtimeUrl.value;
 		spider(url,'q',function(res){
 			var data = JSON.parse(res);
+			console.log(data)
 			$('#myModal').modal('show');
 			for(var key in data){
 				$('#'+key).get(0).value=data[key]
@@ -173,6 +174,9 @@ window.onload=function(){
 		deleteRecord(data);
 		$('#alert_delete').modal('hide');
 	})
+	$('#updateIndexMovieNameData').click(function(){
+		updateIndexMovieNameData();
+	})
 	//-------搜索------
 }
 
@@ -267,6 +271,16 @@ function clearForm(){
 			dataElement[j].value = "";
 		}
 		story.value=""
+}
+//更新主页电影信息
+function updateIndexMovieNameData(){
+	$.ajax({
+		type: "GET",
+		url: "/dataReview/updateIndexMovieNameData",
+		success: function(res){
+			$('#success').modal();
+		}
+	})
 }
 //填表
 function tableGenerate(data){

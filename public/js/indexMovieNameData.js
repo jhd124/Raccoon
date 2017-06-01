@@ -1,0 +1,1 @@
+var movieNameArray=[{"movieName":"Your Name","movieNameChinese":"你的名字。"},{"movieName":"Pirates of the Caribbean: Dead Men Tell No Tales","movieNameChinese":"加勒比海盗5：死无对证"},{"movieName":"Pirates of the Caribbean: Dead Man's Chest","movieNameChinese":"加勒比海盗：聚魂棺"},{"movieName":"American Pastime","movieNameChinese":"美国往事：我们的星条旗"}]

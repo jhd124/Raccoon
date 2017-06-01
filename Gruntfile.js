@@ -8,27 +8,27 @@ module.exports = function(grunt){
 					engine: 'im',
 					sizes:[{
 						width: 250,
-						suffix: '-large-yourName',
+						suffix: '-large',
 						quality: 100
  					},{
 						width: 110,
-						suffix: '-medium-1x-yourName',
+						suffix: '-medium-1x',
 						quality: 70
  					},{
 						width: 220,
-						suffix: '-medium-2x-yourName',
+						suffix: '-medium-2x',
 						quality: 70
  					},{
 						width: 110,
-						suffix: '-small-1x-yourName',
+						suffix: '-small-1x',
 						quality: 70
  					},{
 						width: 220,
-						suffix: '-small-2x-yourName',
+						suffix: '-small-2x',
 						quality: 70
  					},{
 						width: 330,
-						suffix: '-small-3x-yourName',
+						suffix: '-small-3x',
 						quality: 90
  					}]
 				},
