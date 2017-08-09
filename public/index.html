@@ -7,6 +7,31 @@
 	<link rel="stylesheet" href="./css/bootstrap.min.css">
 	<link rel="stylesheet" href="./css/style.css">
 	<script type="text/javascript" src="./js/vue.min.js"></script>
+	<style type="text/css">
+		.cover_img{
+			float: left;
+			vertical-align: middle;
+			width: 110px;
+		}
+		.cover{
+			margin: 1rem;
+		}
+		.detail{
+			height: 100%;
+			text-overflow: ellipsis;
+			text-align: left;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			padding-left: 1rem;
+		}
+		.detail>h5,h4{
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+		}
+		
+	</style>
 </head>
 <body>
 	<div class="container">
@@ -26,45 +51,31 @@
 			<hr>
 		</header>
 		<section class="shelf"> 
-		<!-- <div id="app-1"> -->
-<!-- 		<template v-for="item in movieNameArray"> -->
-		<div id="movies"></div>
-		
-		<!-- <a v-bind:href="item.movieName"> -->
+		<div style="height:2px;width:100%;background-color:purple"></div>
 		<div id="app-1">
 		<template v-for="item in movieNameArray">
-		<div class="col-xs-4 col-sm-2 col-md-2 text-center">
+		<div class="col-xs-12 col-sm-6 col-md-6 text-center">
+		<div class="cover">
 			<a v-bind:href="'./movieName/'+item.movieName">
 			<picture>
-				<source media="(min-width:1200px)" v-bind:src="'./img/cover/large-'+item.filename+'.jpg'">
-				<source media="(min-width:500px)" v-bind:src="'./img/cover/medium-1x-'+item.filename+'.jpg'" v-bind:scrset="'./img/cover/medium-1x-'+item.filename+'.jpg 1x, ./img/cover/medium-2x-'+item.filename+'.jpg 2x'">
-				<img v-bind:src="'./img/cover/small-1x-'+item.filename+'.jpg'" v-bind:srcset="'./img/cover/small-1x-'+item.filename+'.jpg 1x, ./img/cover/small-2x-'+item.filename+'.jpg 2x, ./img/cover/small-3x-'+item.filename+'.jpg'" onerror="coverimage(this)">
-				<h5>{{item.movieNameChinese}}</h5>
+				<source media="(min-width:1200px)" v-bind:src="'./img/cover/'+item.filename+'/large-'+item.filename+'.jpg'">
+				<source media="(min-width:500px)" v-bind:src="'./img/cover/'+item.filename+'/medium-1x-'+item.filename+'.jpg'" v-bind:scrset="'./img/cover/'+item.filename+'/medium-1x-'+item.filename+'.jpg 1x, ./img/cover/'+item.filename+'/medium-2x-'+item.filename+'.jpg 2x'">
+				<img class="cover_img" v-bind:src="'./img/cover/'+item.filename+'/small-1x-'+item.filename+'.jpg'" v-bind:srcset="'./img/cover/'+item.filename+'/small-1x-'+item.filename+'.jpg 1x, ./img/cover/'+item.filename+'/small-2x-'+item.filename+'.jpg 2x, ./img/cover/'+item.filename+'/small-3x-'+item.filename+'.jpg'" onerror="coverimage(this)" class="img-responsive">
 			</picture>
+			<div class="detail">
+			<h4>{{item.movieNameChinese}}</h4>
+			<h5>国家: {{item.country}}</h5>
+			<h5>导演: {{item.director}}</h5>
+			<h5>类型: {{item.catagory}}</h5>
+			</div>
 			</a>
 			</div>
+			</div>
 		</template>
-	<!-- 	</div>
-			<picture>
-				<source media="(min-width:1200px)" src="./img/cover/poster-250-large-yourName.jpg" srcset="./img/cover/poster-250-large-yourName.jpg"></source>
-				<source media="(min-width:500px)" src="./img/cover/poster-110-medium-1x-yourName.jpg" srcset="./img/cover/poster-110-medium-1x-yourName.jpg 1x, ./img/cover/poster-220-medium-2x-yourName.jpg 2x"></source>
-				<img src="./img/cover/poster-110-small-1x-yourName.jpg" srcset="./img/cover/poster-110-small-1x-yourName.jpg 1x, ./img/cover/poster-220-small-2x-yourName.jpg 2x, ./img/cover/poster-330-small-3x-yourName.jpg 3x" alt="yourName" class="img-responsive">
-				<h5>你的名字</h5>
-			</picture>
-			<!-- </a> -->
-		<!-- </div> -->
-		<!-- </template> -->
+	
 		
 		</section>
 		<script src='./js/indexMovieNameData.js'></script>
 		<script src='./js/fetchindex.js'></script>
 	</body>
 	</html>
-	<!-- <a href="./movieName/yourName">
-			<picture>
-				<source media="(min-width:1200px)" src="./img/cover/poster-250-large-yourName.jpg" srcset="./img/cover/poster-250-large-yourName.jpg"></source>
-				<source media="(min-width:500px)" src="./img/cover/poster-110-medium-1x-yourName.jpg" srcset="./img/cover/poster-110-medium-1x-yourName.jpg 1x, ./img/cover/poster-220-medium-2x-yourName.jpg 2x"></source>
-				<img src="./img/cover/poster-110-small-1x-yourName.jpg" srcset="./img/cover/poster-110-small-1x-yourName.jpg 1x, ./img/cover/poster-220-small-2x-yourName.jpg 2x, ./img/cover/poster-330-small-3x-yourName.jpg 3x" alt="yourName" class="img-responsive">
-				<h5>你的名字</h5>
-			</picture>
-			</a> -->

@@ -58,13 +58,37 @@ function randomString(len) {
 	　　return pwd;
 }
 
-
 // start a server
 var server=app.listen(3551,function(){
 	var addr = getAddress();
 	var port=server.address().port;
 	console.log("listening at %s:%s\r\n",addr,port);
 });
+
+
+//修改管理员用户名密码
+app.post('/manager/revise',function(req,res){
+	var oldpassword = req.body.oldpassword;
+	var newpassword = req.body.newpassword||admin.getPassword();
+	var newusername = req.body.newusername||admin.getUserName();
+	if(admin.password===oldpassword){
+		admin.setHistory(admin.getUserName())
+		admin.setPassword(newpassword);
+		admin.setUserName(newusername);
+		admin.save(function(err){
+			if(err){
+				console.log(err);
+				res.send("fail");
+			}else{
+				admin.init();
+				console.log("管理员修改用户名/密码")
+				res.send("success");
+			}
+		});
+	}else{
+		res.send("incorrectPassword")
+	}
+})
 
 //处理包装保存请求的请求体
 function packReqData(req,id){
@@ -120,7 +144,7 @@ var conflict_id_create = "";
 var conflict_id_update = "";
 //主页电影名文件更新
 app.get('/dataReview/updateIndexMovieNameData',function(req,res){
-	movieData.findMovies({fields:{_id:0,movieName:1,movieNameChinese:1}},function(doc,num){
+	movieData.findMovies({fields:{_id:0,movieName:1,movieNameChinese:1,director:1,catagory:1,country:1}},function(doc,num){
 		var data = 'var movieNameArray='+JSON.stringify(doc)
 		fs.writeFile("./public/js/indexMovieNameData.js",data,function(err){
 			if(err){
@@ -223,66 +247,67 @@ function removeDir(path){
 		fs.rmdirSync(path);
         }
     }
-function removePosters(filename){
-	var rootPath = './public/img/cover/'
-	fs.unlink(rootPath+"large-"+filename+'.jpg', function(err){
-		if(err){
-		console.log(err)
-		}else{
-			console.log('large poster deleted');
-		}
-	});
-		fs.unlink(rootPath+"medium-1x-"+filename+'.jpg', function(err){
-		if(err){
-		console.log(err)
-		}else{
-			console.log('medium-1x poster deleted');
-		}
-	});
-		fs.unlink(rootPath+"medium-2x-"+filename+'.jpg', function(err){
-		if(err){
-		console.log(err)
-		}else{
-			console.log('medium-2x poster deleted');
-		}
-	});
-		fs.unlink(rootPath+"small-1x-"+filename+'.jpg', function(err){
-		if(err){
-		console.log(err)
-		}else{
-			console.log('small-1x poster deleted');
-		}
-	});
-		fs.unlink(rootPath+"small-2x-"+filename+'.jpg', function(err){
-		if(err){
-		console.log(err)
-		}else{
-			console.log('small-2x poster deleted');
-		}
-	});
-		fs.unlink(rootPath+"small-3x-"+filename+'.jpg', function(err){
-		if(err){
-		console.log(err)
-		}else{
-			console.log('large poster deleted');
-		}
-	});
-}
+// function removePosters(filename){
+// 	var rootPath = './public/img/cover/'
+// 	fs.unlink(rootPath+"large-"+filename+'.jpg', function(err){
+// 		if(err){
+// 		console.log(err)
+// 		}else{
+// 			console.log('large poster deleted');
+// 		}
+// 	});
+// 		fs.unlink(rootPath+"medium-1x-"+filename+'.jpg', function(err){
+// 		if(err){
+// 		console.log(err)
+// 		}else{
+// 			console.log('medium-1x poster deleted');
+// 		}
+// 	});
+// 		fs.unlink(rootPath+"medium-2x-"+filename+'.jpg', function(err){
+// 		if(err){
+// 		console.log(err)
+// 		}else{
+// 			console.log('medium-2x poster deleted');
+// 		}
+// 	});
+// 		fs.unlink(rootPath+"small-1x-"+filename+'.jpg', function(err){
+// 		if(err){
+// 		console.log(err)
+// 		}else{
+// 			console.log('small-1x poster deleted');
+// 		}
+// 	});
+// 		fs.unlink(rootPath+"small-2x-"+filename+'.jpg', function(err){
+// 		if(err){
+// 		console.log(err)
+// 		}else{
+// 			console.log('small-2x poster deleted');
+// 		}
+// 	});
+// 		fs.unlink(rootPath+"small-3x-"+filename+'.jpg', function(err){
+// 		if(err){
+// 		console.log(err)
+// 		}else{
+// 			console.log('large poster deleted');
+// 		}
+// 	});
+// }
 app.get('/deleteRecord',function(req,res){
 	try{
 	var filename = normalizeFileName(req.query['_id'].split('|')[1]);
 	var path = './public/movie/'+filename;	
-	setTimeout(removeDir(path),0);
-	removePosters(filename);
-
+	var posterPath = './public/img/cover/'+filename;
+	setTimeout(function(){removeDir(path)},0);
+	setTimeout(function(){removeDir(posterPath)},0);
+	// removePosters(filename);
 	movieData.deleteOneMovie(req.query);
-	
-	res.end('deleted')
+	res.end('deleted');
 	}catch(e){
-		res.end(e);
+		console.log(e);
+		res.end('something wrong/n/r'+e);
 	}
 })
-app.post('/login',function(req,res){
+app.post('/manager/login',function(req,res){
 
 	var password = req.body.password;
 	var userName = req.body.userName;
@@ -300,7 +325,7 @@ app.post('/login',function(req,res){
 })
 app.get('/logout',function(req,res){
 	res.cookie('lid',"0");
-	res.render("index")
+	res.redirect("/login.html")
 })
 app.post('/passwordModify',function(req,res){
 	admin.setPassword(req.body.password);
@@ -308,6 +333,14 @@ app.post('/passwordModify',function(req,res){
 	res.send('success');
 })
 app.get("/dataReview.html",function(req,res){
+	if(req.cookies.lid!==rs){
+		res.render("login");
+	}else{
+		res.render("dataReview")
+	}
+})
+//设置主页路由
+app.get('/',function(req,res){
 	if(req.cookies.lid!==rs){
 		res.render("login");
 	}else{
@@ -332,7 +365,8 @@ app.get("/retriveMovieData",function(req,res){
 				}else if(req.query.operation==='s'){
 					var actors = pic.actors;
 					var charas = pic.chatactors;
-					var rootPath = './public/movie/'+normalizeFileName(data.movieName);
+					var normalizedfilename = normalizeFileName(data.movieName);
+					var rootPath = './public/movie/'+normalizedfilename;
 					console.log(normalizeFileName(data.movieName))
 					fs.mkdir(rootPath,function(err){
 						if((err!==null&&err.code==="EEXIST")||err===null){
@@ -340,14 +374,21 @@ app.get("/retriveMovieData",function(req,res){
 								if(err){
 									console.log(err)
 								}else{
-									var destPath = './public/img/cover/'
+									var destPath = './public/img/cover/'+normalizedfilename+'/';
 									console.log(rootPath,destPath)
-									resizePoster(rootPath,destPath,250,"large-"+normalizeFileName(data.movieName));
-									resizePoster(rootPath,destPath,110,"medium-1x-"+normalizeFileName(data.movieName));
-									resizePoster(rootPath,destPath,220,"medium-2x-"+normalizeFileName(data.movieName));
-									resizePoster(rootPath,destPath,110,"small-1x-"+normalizeFileName(data.movieName));
-									resizePoster(rootPath,destPath,220,"small-2x-"+normalizeFileName(data.movieName));
-									resizePoster(rootPath,destPath,330,"small-3x-"+normalizeFileName(data.movieName));
+									fs.mkdir(destPath,function(err){
+										if((err!==null&&err.code==="EEXIST")||err===null){
+											resizePoster(rootPath,destPath,250,"large-"+normalizeFileName(data.movieName));
+											resizePoster(rootPath,destPath,110,"medium-1x-"+normalizeFileName(data.movieName));
+											resizePoster(rootPath,destPath,220,"medium-2x-"+normalizeFileName(data.movieName));
+											resizePoster(rootPath,destPath,110,"small-1x-"+normalizeFileName(data.movieName));
+											resizePoster(rootPath,destPath,220,"small-2x-"+normalizeFileName(data.movieName));
+											resizePoster(rootPath,destPath,330,"small-3x-"+normalizeFileName(data.movieName));
+										}else{
+											console.log(err);
+										}
+									})
+									
 								}
 							});
 							fs.mkdir(rootPath+'/'+'actors',function(err){

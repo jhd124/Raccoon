@@ -1,8 +1,9 @@
-@echo Æô¶¯Ð¡ä½ÐÜ·þÎñÆ÷
+@echo ï¿½ï¿½Ð¡ï¿½ï¿½Ü·ï¿½ï¿½ï¿½ï¿½ï¿½
 @echo Start raccoon server
 @echo off
 echo ------------------------------------------------------- >> log.txt
-echo ¿ª»úÊ±¼ä£º>>log.txt
-date /t >>log.txt
-time /t >>log.txt
-node router.js >> log.txt
+echo ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£º>>log.txt
+date /t >>log.log
+time /t >>log.log
+start cmd /k "ipconfig&node router.js >> log.log"
+start cmd /k "ipconfig&node manageServer.js >> Managerlog.log"

@@ -37,6 +37,11 @@ window.onload=function(){
 			window.open(url);
 		}
 	}
+	Mtimesearch.onclick=function(){
+		var value = Mtimesearch_value.value;
+		var url = "http://search.mtime.com/search/?q="+value;
+		window.open(url);
+	}
 	//智能添加
 	smartSearch.onclick = function(){
 		$('#modify').hide();
@@ -118,7 +123,7 @@ window.onload=function(){
 			addRecords(data);
 		}
 	});
-	//在模态框关闭的时候让save隐藏，让modify显示--------
+	//在模态框关闭的时候让save隐藏，让modify显示 并清空表单--------
 	$('#myModal').on('hidden.bs.modal', function (e) {
 		$('#save').hide();
 		$('#modify').show();
@@ -267,10 +272,11 @@ function spider(MtimeUrl,flag,callback){
 //清表
 function clearForm(){
 	var dataElement = $(".dataElement");
-		for(var j = 0; j<dataElement.length-1; j++){
-			dataElement[j].value = "";
-		}
-		story.value=""
+	for(var j = 0; j<dataElement.length-1; j++){
+		dataElement[j].value = "";
+	}
+	story.value="";
+	
 }
 //更新主页电影信息
 function updateIndexMovieNameData(){
