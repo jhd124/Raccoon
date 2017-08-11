@@ -96,12 +96,12 @@ app.get('/movieName/:movieName',function(req,res){
 		movieData.findOneMovie({movieName: a},function(doc){
 			var address = getAddress();
 			var port = server.address().port;
-			var rootUrl = 'http://'+address+':'+port+'/movie/'+normalizeFileName(doc.movieName);
+			var rootUrl = '/movie/'+normalizeFileName(doc.movieName);
 			var data = {
-				CSS1: 'http://'+address+':'+port+'/css/bootstrap.min.css',
-				CSS2: 'http://'+address+':'+port+'/css/style.css',
-				logoPath:'http://'+address+':'+port+'/img/logo.png',
-				moviePath: rootUrl+'.mp4',
+				CSS1: '/css/bootstrap.min.css',
+				CSS2: '/css/style.css',
+				logoPath:'/img/logo.png',
+				moviePath: rootUrl+'/'+normalizeFileName(doc.movieName)+'.mp4',
 				movieName: doc.movieName,
 				movieNameChinese: doc.movieNameChinese,
 				posterPath:rootUrl+'/poster.jpg',

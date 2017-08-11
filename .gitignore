@@ -1,2 +1,11 @@
 node_modules
 public/movie
+log.txt
+log.log
+managerlog.txt
+managerlog.log
+gulpfile.js
+Gruntfile.js
+.vs
+public/img/cover/*
+垃圾箱/index(artTemplat失败版).html
